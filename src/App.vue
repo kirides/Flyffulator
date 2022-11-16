@@ -190,7 +190,7 @@ export default {
     },
     getImageUrl(img, store) {
       const rx = new RegExp(escapeRegex(img), 'i')
-      store = store || (import.meta.globEager('@/**/*.png'));
+      store = store || (import.meta.glob('@/**/*.png', {eager: true}));
       for (const i in store) {
         if (i.match(rx)) {
             return store[i].default;
