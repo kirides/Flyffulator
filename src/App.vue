@@ -67,6 +67,10 @@ import { Billposter, Vagrant } from './calc/jobs'
 
 const utils = new Utils()
 
+function escapeRegex(string) {
+    return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 export default {
   name: 'App',
   components: {
@@ -184,22 +188,23 @@ export default {
       
       this.focusMonster = this.monsters.find(monster => monster.level >= this.character.ref.level) || this.monsters.slice(-1)[0];
     },
-    getImageUrl(img) {
-      var images = require.context('./assets/images/', false, /\.png$/)
-      return images('./' + img)
+    getImageUrl(img, store) {
+      const rx = new RegExp(escapeRegex(img), 'i')
+      store = store || (import.meta.globEager('@/**/*.png'));
+      for (const i in store) {
+        if (i.match(rx)) {
+            return store[i].default;
+          }
+        }
+      return this.getImageUrl('syssysquentskil')
     },
     getIconUrl(img) {
-      try {
-        var images = require.context('./assets/images/Icons/Items', false, /\.png$/)
-        return images('./' + img)
-      } catch(error) {
-        // dummy icon if icon couldn't be found
-        return images('./' + "syssysqueheadrb.png")
-      }
+      const itemIconImages = import.meta.globEager('@/assets/images/Icons/Items/**/*.png')
+      return this.getImageUrl(img, itemIconImages)
     },
     getSkillIconUrl(img) {
-      var images = require.context('./assets/images/Icons/Skills/colored', false, /\.png$/)
-      return images('./' + img)
+      const skillIconImages = import.meta.globEager('@/assets/images/Icons/Skills/colored/**/*.png')
+      return this.getImageUrl(img, skillIconImages)
     }
   }
 }
