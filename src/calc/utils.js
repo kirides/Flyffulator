@@ -10,7 +10,7 @@ import { upgradesjson } from "../assets/flyff/upgradeBonus.js";
 export class Utils {
     constructor() {
         this.character = new Vagrant();
-        this.monsters = monstersjson;
+        this.monsters = monstersjson.sort((a, b) => a.level < b.level ? -1 : a.level > b.level ? 1 : 0);
     }
 
     static skills = skillsjson;
