@@ -193,6 +193,10 @@ export default {
       store = store || (import.meta.glob('@/**/*.png', {eager: true}));
       for (const i in store) {
         if (i.match(rx)) {
+            let url = store[i].default;
+            if (url.startsWith('.') || url.startsWith('/')) {
+              return './' + store[i].default.trimStart('.').trimStart('/');  
+            }
             return store[i].default;
           }
         }
