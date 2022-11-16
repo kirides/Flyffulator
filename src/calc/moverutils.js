@@ -19,8 +19,17 @@ export default class Moverutils {
 
     static premiumItems = [
         Utils.getItemByName('Grilled Eel'),
-        // Utils.getItemByName('Upcut Stone'), // incorrect item. its a scroll type, not buff and has no abilities. api issue
+        // incorrect item. its a scroll type, not buff and has no abilities. api issue
+        { ...Utils.getItemByName('Upcut Stone'), ...{"abilities": [
+            {
+                "add": 20,
+                "parameter": "attack",
+                "rate": true
+            }
+        ],} },
+        Utils.getItemByName('Low Upcut Stone'),
         Utils.getItemByName('Def-Upcut Stone'),
+        Utils.getItemByName('Low Def-Upcut Stone'),
         Utils.getItemByName('Power Scroll'),
         Utils.getItemByName('Charged Power Scroll'),
         Utils.getItemByName('Super Charged Power Scroll'),
