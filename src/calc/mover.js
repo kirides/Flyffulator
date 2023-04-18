@@ -12,7 +12,7 @@ export class Mover {
         this.armorUpgradeBonus = Utils.getUpgradeBonus(this.armorUpgrade);
         this.mainhandUpgradeBonus = Utils.getUpgradeBonus(this.mainhandUpgrade);
         this.offhandUpgradeBonus = Utils.getUpgradeBonus(this.offhandUpgrade);
-        
+
         this.applyBuffs();
         this.applyPremiumItems();
         this.applyBaseStats();
@@ -77,7 +77,7 @@ export class Mover {
 
     applyPremiumItems() {
         for (let item of Moverutils.premiumItems) {
-            if(item) {
+            if (item) {
                 if (this.activePremiumItems.find(i => i.id == item.id)) continue;
                 item.enabled = false; // disable all items initially
                 this.activePremiumItems.push(item);
@@ -99,7 +99,7 @@ export class Mover {
         return Math.floor(defense);
     }
 
-    getBlock(ranged=false) {
+    getBlock(ranged = false) {
         // CMover::GetBlockFactor
         let extra = this.getExtraParam('block', true);
         if (ranged) {
@@ -109,7 +109,7 @@ export class Mover {
         }
 
         const attackerDex = 15; // Fixed to 15 in the stat window in-game
-        
+
         const blockB = Utils.clamp(Math.floor((this.dex + attackerDex + 2) * ((this.dex - attackerDex) / 800.0)), 0, 10);
         const blockRate = Math.floor((this.dex / 8.0) * this.constants.block + extra);
         const final = Math.max(blockB + blockRate, 0);
@@ -129,11 +129,11 @@ export class Mover {
             0.88, 0.96, 1.04, 1.12, 1.20,
             1.30, 1.38, 1.50
         ];
-        
+
         const minBaseSpeed = 0.125;
         const maxBaseSpeed = 2.0;
         const baseSpeedScaling = 200.0;
-        
+
         const baseDividend = baseSpeedScaling * minBaseSpeed;
         const maxBaseScaledSpeed = baseSpeedScaling - baseDividend / maxBaseSpeed;
 
@@ -165,7 +165,6 @@ export class Mover {
         chance = Math.floor(chance * this.constants.critical);
         chance = chance >= 100 ? 100 : chance;
         chance = chance < 0 ? 0 : chance;
-
         chance += this.getExtraParam('criticalchance', true);
         return chance;
     }
@@ -220,7 +219,7 @@ export class Mover {
     /**
      * Get the average critical hit damage of damageNormal against the specified monster (or a training dummy if null).
      */
-    getCriticalHit(monster=null, damageNormal) {
+    getCriticalHit(monster = null, damageNormal) {
         // CMover::GetHitPower
         var fMin = 1.1;
         var fMax = 1.4;
@@ -251,7 +250,7 @@ export class Mover {
         var min = 0;
         var max = 0;
 
-        if (this.offhand && this.offhand.subcategory == "shield") {    
+        if (this.offhand && this.offhand.subcategory == "shield") {
             min += this.offhand.minDefense;
             max += this.offhand.maxDefense;
 
@@ -270,7 +269,7 @@ export class Mover {
                 let item = Utils.getItemById(part);
                 let _min = item.minDefense;
                 let _max = item.maxDefense;
-                
+
                 if (this.armorUpgradeBonus != null) {
                     _min *= 1 + this.armorUpgradeBonus.suitDefense / 100;
                     _max *= 1 + this.armorUpgradeBonus.suitDefense / 100;
@@ -279,7 +278,7 @@ export class Mover {
                     _min += upgradeValue;
                     _max += upgradeValue;
                 }
-                
+
                 min += _min;
                 max += _max;
             });
@@ -363,8 +362,11 @@ export class Mover {
 
         var add = 0;
         if (this.armor && this.armor.bonus) {
-            const bonus = this.armor.bonus.find(a => params.includes(a.ability.parameter) && a.ability.rate == rate);
-            if (bonus) add = bonus.ability.add;
+
+            const bonus = this.armor.bonus
+                .filter(a => params.includes(a.ability.parameter) && a.ability.rate == rate);
+
+            if (bonus) add = bonus.reduce((acc, cur) => acc + (cur.ability.add || 0), 0);
         }
 
         // Suit Piercing
@@ -441,7 +443,7 @@ export class Mover {
         }
 
         // cloak added here
-        if(this.cloak && this.cloak.abilities) {
+        if (this.cloak && this.cloak.abilities) {
             const bonus = this.cloak.abilities.find(a => params.includes(a.parameter) && a.rate == rate);
             if (bonus) add += bonus.add;
         }
@@ -453,7 +455,7 @@ export class Mover {
      * Returns additions to a specific value from your active & enabled buffs
      * @param param The value to find additions for 
      */
-    buffParam(param, rate=false) {
+    buffParam(param, rate = false) {
         let add = 0;
         let params = [param].concat(Utils.globalParams[param]);
 
@@ -461,7 +463,7 @@ export class Mover {
             if (!buff.enabled) continue;    // Don't add disabled buffs
             let maxLevel = buff.levels.slice(-1)[0];
             let abilities = maxLevel.abilities;
-            
+
             for (let ability of abilities) {
                 if (params.includes(ability.parameter) && ability.rate == rate) {
                     add += ability.add;
@@ -486,14 +488,14 @@ export class Mover {
      * Returns additions to a specific value from your active & enabled premium items
      * @param param The value to find additions for 
      */
-     premiumItemParam(param, rate=false) {
+    premiumItemParam(param, rate = false) {
         let add = 0;
         let params = [param].concat(Utils.globalParams[param]);
 
         for (let premiumItem of this.activePremiumItems) {
             if (!premiumItem.enabled) continue;    // Don't add disabled buffs
             let abilities = premiumItem.abilities;
-            
+
             for (let ability of abilities) {
                 if (params.includes(ability.parameter) && ability.rate == rate) {
                     add += ability.add;
@@ -570,7 +572,7 @@ export class Mover {
         } else {
             const maxLevel = this.constants.skills[skillIndex].levels.slice(-1)[0];
             damage = this.getDamage(monster, skillIndex);
-            
+
             const frames = 55;
             const hitsPerSec = (30 / frames) * (this.DCT / 100);
             let cooldown = maxLevel.cooldown;
@@ -651,7 +653,7 @@ export class Mover {
         return damage < 1 ? 1 : damage;
     }
 
-    getDamageMultiplier(skill=false) {
+    getDamageMultiplier(skill = false) {
         let factor = 1.0;
 
         // Knight Swordcross calculation
@@ -707,7 +709,7 @@ export class Mover {
 
         // Calculate base damage based on scaling per stat
         const base = maxLevel.scalingParameters.reduce((total, current) => total += this[current.stat] * current.scale, 0);
-    
+
         // CMover::GetMeleeSkillPower()
         const level = skill.levels.length;
         let powerMin = ((weaponMin + (maxLevel.minAttack + 0) * 5 + base - 20) * (16 + level) / 13);
@@ -781,7 +783,7 @@ export class Mover {
     getOptimalAutoRatio(target) {
         let dpsValues = [];
         let ratios = []
-        
+
         // Calculating for at least level 15
         this.level = this.level < 15 ? 15 : this.level;
 
