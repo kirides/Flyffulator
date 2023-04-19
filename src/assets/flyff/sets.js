@@ -867,12 +867,16 @@ export const setsjson = [
       },
       {
         equipped: 3,
-        ability: { parameter: "criticalchance", add: 30, rate: true },
+        ability: { parameter: "criticalchance", add: 25, rate: true },
       },
       { equipped: 3, ability: { parameter: "def", add: 45, rate: false } },
       {
         equipped: 2,
         ability: { parameter: "attackspeed", add: 10, rate: true },
+      },
+      {
+        equipped: 2,
+        ability: { parameter: "criticalchance", add: 10, rate: true },
       },
       { equipped: 2, ability: { parameter: "def", add: 45, rate: false } },
     ],
@@ -2466,12 +2470,16 @@ export const setsjson = [
       },
       {
         equipped: 3,
-        ability: { parameter: "criticalchance", add: 30, rate: true },
+        ability: { parameter: "criticalchance", add: 25, rate: true },
       },
       { equipped: 3, ability: { parameter: "def", add: 45, rate: false } },
       {
         equipped: 2,
         ability: { parameter: "attackspeed", add: 10, rate: true },
+      },
+      {
+        equipped: 2,
+        ability: { parameter: "criticalchance", add: 10, rate: true },
       },
       { equipped: 2, ability: { parameter: "def", add: 45, rate: false } },
     ],
