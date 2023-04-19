@@ -11,13 +11,8 @@
 </template>
 
 <script>
-import VueApexCharts from "vue3-apexcharts"
-
 export default {
   name: 'TopStats',
-  components: {
-      apexchart: VueApexCharts
-  },
   created() { this.update() },
   watch: {
     '$root.character.ref.str'() { this.update() },

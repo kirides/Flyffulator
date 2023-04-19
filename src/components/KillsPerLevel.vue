@@ -14,13 +14,8 @@
 </template>
 
 <script>
-import VueApexCharts from "vue3-apexcharts"
-
 export default {
   name: 'KillsPerLevel',
-  components: {
-      apexchart: VueApexCharts,
-  },
   watch: {
     '$root.monsters'() {
       this.update()
